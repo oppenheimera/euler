@@ -24,13 +24,32 @@ def get_val(x, prev_row):
   
 def pretty_print(triangle):
     i = 0
-    for x in triangle:
-        print("Row {}: {}".format(i,x))
-        i += 1
+    for row in triangle:
+        r = []
+        for col in row:
+            if col % 7 == 0:
+                r.append(1)
+            else: 
+                r.append(0)
+        print(r)
 
 def check_sevens(row):
     bools = [x % 7 == 0 for x in row]
     return "Yes: {} - -  No: {}".format(bools.count(True), bools.count(False))
+
+def stats(n):
+    for x in n:
+        print("{} -> {}".format((len(x) - 1), check_sevens(x)))
+
+def check(tri):
+    entries = 0
+    count = 0
+    for row in tri:
+        for col in row:
+            entries += 1
+            if col % 7 != 0:
+                count += 1
+    return "({} / {})".format(count, entries)
 
 def cheat(n):
     if n < 7:
@@ -48,16 +67,8 @@ def last_multiple(n):
 
 f = lambda n: [x for x in range(n, n * 7 + 1, n)]
 
-def calculate_seq(hi):
-    total = 0
-    seq_start = 1
-    i = 1
-    while i < hi:
-        for x in range(1,8):
-            total += seq_start * x
-            i += 1
-        seq_start += 1
-    return total
+def no(n):
+    return (n - last_multiple(n) + 1) * (n // 7 + 1)
 
 
 elapsed = start - time.time()
