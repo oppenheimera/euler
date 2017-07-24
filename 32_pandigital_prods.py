@@ -1,5 +1,5 @@
 """
-Largest single multiplicand of a 1-9 PD-prod is 1738
+Largest single multiplicand of a 1-9 PD-prod is 1963
 """
 from gmpy2 import mul as gmp_mul
 from itertools import combinations
