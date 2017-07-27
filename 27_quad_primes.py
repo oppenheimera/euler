@@ -1,6 +1,6 @@
 from utils import prime as is_prime
 from sys import argv
-from itertools import combinations_with_replacement as cmb
+from itertools import permutations, chain
 """
 Considering quadratics of the form:
 
@@ -23,18 +23,22 @@ def get_number_of_consec_primes(a, b):
     consec = 0
     x = 0
     f = lambda x: x**2 + a*x + b
-    while (is_prime(f(x))):
-        consec += 1
-        x += 1
+    try:
+        while (is_prime(f(x))):
+            consec += 1
+            x += 1
+    except Exception as e:
+        pass
     return consec
 
 if argv[-1].lower() == 'debug':
     assert get_number_of_consec_primes(1,41) == 40
     assert get_number_of_consec_primes(-79,1601) == 80
 
-for a, b in cmb(range(1001), 2):
+for a, b in permutations(chain(range(-1001,0), range(1,1001)), r=2):
         m = get_number_of_consec_primes(a,b) 
         if m > CURR_MAX:
+            print(m)
             CURR_MAX = m
             A, B = a, b
 
