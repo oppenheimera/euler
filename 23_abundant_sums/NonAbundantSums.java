@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static java.lang.Math.floor;
+
 /*
 A perfect number is a number for which the sum of its proper divisors is 
 exactly equal to the number. For example, the sum of the proper divisors 
@@ -44,10 +46,20 @@ public class NonAbundantSums {
                 if (i != n/i) {
                     divisorList.add(n/i);
                 }
-            } else if (Math.floor(Math.sqrt(n)) * Math.floor(Math.sqrt(n)) == n) {
+            } else if (floor(Math.sqrt(n)) * floor(Math.sqrt(n)) == n) {
                 Collections.addAll(divisorList, (int) Math.sqrt(n), (int) Math.sqrt(n));
             }
         }
+        return divisorList;
+    }
+
+    public static ArrayList<Integer> bruteForceDivisorGetter(int n) {
+        ArrayList<Integer> divisorList = new ArrayList<>();
+        for (int i = 1; i < n/2 + 1; i++) {
+            if (n % i == 0) divisorList.add(i);
+        }
+        int squareRoot = (int) floor(Math.sqrt(n));
+        if (squareRoot * squareRoot == n) Collections.addAll(divisorList, squareRoot, squareRoot);
         return divisorList;
     }
 
@@ -58,7 +70,7 @@ public class NonAbundantSums {
     }
 
     public static boolean isAbundant(int n) {
-        if (sumArrayList(getDivisors(n)) > n) return true;
+        if (sumArrayList(bruteForceDivisorGetter(n)) > n) return true;
         return false;
     }
 
@@ -69,6 +81,18 @@ public class NonAbundantSums {
 
         //these fuckers are counting duplicates
         for (int i = 11; i <= 28123; i++) if (isAbundant(i)) L.add(i);
+
+//        for (int i = 0; i < 28132; i++) {
+//            ArrayList<Integer> LL = getDivisors(i);
+//            ArrayList<Integer> MM = bruteForceDivisorGetter(i);
+//            Collections.sort(LL);
+//            if (!LL.equals(MM)) {
+//                System.out.println(MM);
+//                System.out.println(LL);
+//                System.out.println(i);
+//            }
+//
+//        }
 
         //bound provided by http://mathworld.wolfram.com/AbundantNumber.html
         for (int j = 1; j <= 20161; j++) if (!twoSumDecision(j, L)) sum += j;
