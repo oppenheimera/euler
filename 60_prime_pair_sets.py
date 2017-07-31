@@ -1,4 +1,4 @@
-from utils import primes
+from utils import p as primes
 from itertools import permutations, combinations
 from gmpy2 import is_prime
 from sys import argv
@@ -12,21 +12,32 @@ of four primes with this property.
 Find the lowest sum for a set of five primes for which any two primes 
 concatenate to produce another prime.
 """
+big_prime_dict = dict()
+
 def satifsfies_prime_pairings(tup):
-    if '5' in tup or '3' in tup:
+    if '5' in tup or '2' in tup:
         return False
+    
     pset = set()
+    
     for p in permutations(tup, 2):
         a, b = p
         pset.add(int(a + b))
     for N in pset:
-        if divides_three(N) == True:
-            return False
-        if divides_nine(N) == True:
-            return False
-        if is_prime(N) == False:
-            return False
-    return True
+        if N in big_prime_dict:
+            if big_prime_dict[N] == False:
+                return False
+            return True
+        elif N not in big_prime_dict:
+            if divides_three(N) == True:
+                big_prime_dict[N] = False
+            elif divides_nine(N) == True:
+                big_prime_dict[N] = False
+            elif is_prime(N) == False:
+                big_prime_dict[N] = False
+            else: 
+                big_prime_dict[N] = True
+    return big_prime_dict[N]
 
 def digit_sum(N):
     i = 0
@@ -73,11 +84,10 @@ if argv[-1] == 'debug':
         print('satifsfies_prime_pairings is broken')
     print("satifsfies_prime_pairings is working")
 
-if argv[-2] == 'run':
-    CUTOFF = int(argv[-1])
+if argv[-1] == 'run':
     primes = [str(p) for p in primes]
 
-    primesets = combinations(primes[:CUTOFF], 5)
+    primesets = combinations(primes, 5)
     ans = [(10**6, 1)]
 
     for pset in primesets:
@@ -86,5 +96,3 @@ if argv[-2] == 'run':
                 ans.append(pset)
                 print("Found set {} summing to {}.".format(pset, get_sum(pset)))
             
-
-# print(sum(min(ans, key=sum)))

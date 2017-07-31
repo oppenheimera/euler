@@ -11,3 +11,6 @@ def prime(n):
             return True
         elif n % x == 0:
             return False
+p = []
+for line in open('primes.txt', 'r'):
+    p += [int(s) for s in line.split()]
