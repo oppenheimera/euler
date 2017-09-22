@@ -1,5 +1,5 @@
 from math import ceil
-from itertools import cycle, islice, accumulate, count
+from itertools import cycle, accumulate, count
 """
 p(n) is a function that finds the number of partitions of a set n, where
 the elements of the set are identical.
@@ -16,10 +16,7 @@ to Euler's theory of partitions.
 
 p(n)=p(n-1)+p(n-2)-p(n-5)-p(n-7)+p(n-12)+p(n-15)-p(n-22)-...
 """
-START = 0
-BOUND = 10**7
 SIGN_CYCLE = (1,1,-1,-1)
-cache = {}
 
 def gp():
     """
@@ -28,19 +25,6 @@ def gp():
     [1, 2, 5, 7, 12, 15, 22, 26, 35, 40]
     """
     return accumulate(k if k % 2 else k // 2 for k in count(1))
-
-
-# def gp(m):
-#     """ a closed formula to compute the nth generalized pentagonal number """
-#     if m < 0:
-#         return 0
-#     elif m == 0:
-#         return 1
-#     elif m%2 == 0:
-#         n = -m/2
-#     else:
-#         n = ceil(m/2)
-#     return int(n*(3*n-1)/2)
 
 def p(m):
     generalized_pents = []
