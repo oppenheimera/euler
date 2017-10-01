@@ -14,3 +14,8 @@ def prime(n):
 p = []
 for line in open('primes.txt', 'r'):
     p += [int(s) for s in line.split()]
+
+def euclidean_alg(a, b):
+    if 0 in (a,b):
+        return max(a,b)
+    return euclidean_alg(min(a,b), max(a,b) % min(a,b))
