@@ -1,5 +1,5 @@
 """
-find the number of integers below 10^6 whose "number chains" arrive at 89.
+find the number of integers below 10^6 whose "number chains" arrive at 89
 
 i.e. 85 → 89 → 145 → 42 → 20 → 4 → 16 → 37 → 58 → 89
 """

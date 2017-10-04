@@ -1,3 +1,5 @@
+# none of this works well enough
+
 import time
 from itertools import combinations
 
