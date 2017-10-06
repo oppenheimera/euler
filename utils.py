@@ -11,11 +11,29 @@ def prime(n):
             return True
         elif n % x == 0:
             return False
-p = []
-for line in open('primes.txt', 'r'):
-    p += [int(s) for s in line.split()]
 
 def euclidean_alg(a, b):
     if 0 in (a,b):
         return max(a,b)
     return euclidean_alg(min(a,b), max(a,b) % min(a,b))
+
+class matrix:
+    def __init__(self, size, vector=None):
+        self.size = size
+        self.this = [[0 for i in range(size)]] * size
+        if vector:
+            self.build_from_vector(vector)
+    def build_from_vector(self, vector):
+        n = self.size
+        assert n**2 == len(vector)
+        for i in range(n):
+            self.this[i] = vector[n*i : n*i+n]
+    def at(self, x, y):
+        return self.this[y][x]
+    def put(self, x, y, item):
+        a = self.this[y]
+        a[x] = item
+        print(a)
+    def pprint(self):
+        for vector in self.this:
+            print(vector)
