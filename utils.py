@@ -20,7 +20,7 @@ def euclidean_alg(a, b):
 class matrix:
     def __init__(self, size, vector=None):
         self.size = size
-        self.this = [[0 for i in range(size)]] * size
+        self.this = [[0 for i in range(size)] for j in range(size)]
         if vector:
             self.build_from_vector(vector)
     def build_from_vector(self, vector):
@@ -31,9 +31,7 @@ class matrix:
     def at(self, x, y):
         return self.this[y][x]
     def put(self, x, y, item):
-        a = self.this[y]
-        a[x] = item
-        print(a)
+        self.this[y][x] = item
     def pprint(self):
         for vector in self.this:
             print(vector)
