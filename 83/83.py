@@ -51,7 +51,7 @@ def length(G, v):
     i,j = v
     return G.at(i,j)
 
-def dijkstras(G, s):
+def dijkstras(G, s=(0,0)):
     dist = dict()
     prev = dict()
     Q = make_q(G.size)
@@ -81,7 +81,9 @@ def get_path_cost(G, sequence):
     for i,j in sequence: s.append(G.at(i,j))
     return sum(s)
 
-G = read_matrix()
-G = matrix(int(len(G)**(1/2)), G)
-print(make_answer(G))
+
+dist, prev = dijkstras(M)
+# G = read_matrix()
+# G = matrix(int(len(G)**(1/2)), G)
+# print(make_answer(G))
 
