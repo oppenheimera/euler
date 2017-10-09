@@ -1,10 +1,17 @@
 import sys
+from math import inf
 sys.path.append('/Users/oppenheimer/broject_euler')
 from utils import matrix
 from itertools import product
 
 M = [131,673,234,103,18,201,96,342,956,150,630,803,746,422,111,537,699,497,121,956,805,732,524,37,331]
 M = matrix(5, M)
+
+def make_answer(G):
+    n = G.size-1
+    distances, prev = dijkstras(G, (0,0))
+    path_cost = get_path_cost(G, reconstruct_path(prev, (n,n)))
+    return path_cost
 
 def read_matrix(path='matrix.txt'):
     ans = []
@@ -16,34 +23,11 @@ def read_matrix(path='matrix.txt'):
 def make_q(l):
     return sorted(product(range(l), repeat=2), key=lambda t: sum(t))
 
-def get_path(M):
-    A = matrix(M.size)
-    for i in range(M.size): # set A_{i,j} = infinity
-        for j in range(M.size):
-            A.put(i, j, sys.maxsize)
-    A.put(0,0,M.at(0,0))
-    Q = make_q(M.size)
-    for vertex in Q:
-        vertex = Q.pop(0)
-        neighbors = get_neighbors(A, vertex)
-        for neighbor in neighbors:
-            i,j = neighbor
-            x,y = vertex
-            alt = A.at(i,j) + M.at(x,y)
-            if not seen(A, (x,y)):
-                alt = M.at(i,j) + M.at(x,y)
-                A.put(i,j, alt)
-            if alt < A.at(i,j):
-                A.put(i,j, alt)
-    A.pprint()
-    return A.at(A.size-1, A.size-1)
-
-def neighbor_dist(G, pos):
-    return [(v, dist(G, v)) for v in get_neighbors(G, pos)]
-
-def seen(G, pos):
-    i,j = pos
-    return G.at(i,j) < sys.maxsize
+def make_neighbor_adjacency(G):
+    d = dict()
+    for node in make_q(G.size):
+        d[node] = get_neighbors(G, node)
+    return d
 
 def get_neighbors(G, pos):
     # graph agnostic, just returns coordinates
@@ -63,7 +47,41 @@ def get_neighbors(G, pos):
         neighbors.append((i,j-1))
     return neighbors
 
-def dist(G,v):
+def length(G, v):
     i,j = v
     return G.at(i,j)
+
+def dijkstras(G, s):
+    dist = dict()
+    prev = dict()
+    Q = make_q(G.size)
+    for pos in Q:
+        dist[pos] = inf
+    dist[(0,0)] = 0
+    while Q:
+        u = Q.pop(0)
+        for v in get_neighbors(G, u):
+            alt = dist[u] + length(G, v)
+            if alt < dist[v]:
+                dist[v] = alt
+                prev[v] = u
+    return dist, prev
+
+def reconstruct_path(dictionary, source):
+    ans = []
+    try: 
+        while dictionary[source]:
+            ans.insert(0, source)
+            source = dictionary[source]
+    finally:
+        return ans
+
+def get_path_cost(G, sequence):
+    s = [G.at(0,0)]
+    for i,j in sequence: s.append(G.at(i,j))
+    return sum(s)
+
+G = read_matrix()
+G = matrix(int(len(G)**(1/2)), G)
+print(make_answer(G))
 
