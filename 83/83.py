@@ -28,14 +28,22 @@ def get_path(M):
         neighbors = get_neighbors(A, vertex)
         for neighbor in neighbors:
             i,j = neighbor
-            alt = M.at(i,j) + dist(M, vertex)
+            x,y = vertex
+            alt = A.at(i,j) + M.at(x,y)
+            if not seen(A, (x,y)):
+                alt = M.at(i,j) + M.at(x,y)
+                A.put(i,j, alt)
             if alt < A.at(i,j):
                 A.put(i,j, alt)
     A.pprint()
     return A.at(A.size-1, A.size-1)
 
 def neighbor_dist(G, pos):
-    return [dist(G, v) for v in get_neighbors(G, pos)]
+    return [(v, dist(G, v)) for v in get_neighbors(G, pos)]
+
+def seen(G, pos):
+    i,j = pos
+    return G.at(i,j) < sys.maxsize
 
 def get_neighbors(G, pos):
     # graph agnostic, just returns coordinates
