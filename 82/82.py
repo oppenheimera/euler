@@ -5,7 +5,6 @@ from utils import matrix
 
 M = [131,673,234,103,18,201,96,342,956,150,630,803,746,422,111,537,699,497,121,956,805,732,524,37,331]
 M = matrix(5, M)
-path = [201, 96, 342, 234, 103, 18]
 
 def test():
     assert get_path(M) == 994
@@ -62,24 +61,13 @@ def improve_row(G, M, col):
         if min(a) < M.at(col, j):
             M.put(col, j, min(a))
 
-def get_min(G, i, j):
-    if j == 0:
-        lowerL = G.at(i-1, j+1) + G.at(i-1, j) + G.at(i, j)
-        line = G.at(i-1, j) + G.at(i, j)
-        ans = min(lowerL, line)
-    if j == G.size - 1:
-        upperL = G.at(i-1, j-1) + G.at(i-1, j) + G.at(i,j)
-        line =  G.at(i-1, j) + G.at(i, j)
-        ans = min(upperL, line)
-    else:
-        upperL = G.at(i-1, j-1) + G.at(i-1, j) + G.at(i,j)
-        line = G.at(i-1, j) + G.at(i, j)
-        lowerL = G.at(i-1, j+1) + G.at(i-1, j) + G.at(i, j)
-        ans = min(upperL, line, lowerL)
-    return ans
-
 def get_col_min(G, col):
     vector = []
     for j in range(G.size):
         vector.append(G.at(col, j))
     return min(vector)
+
+G = read_matrix()
+G = matrix(int(len(G)**(1/2)), G)
+print(get_path(M))
+
