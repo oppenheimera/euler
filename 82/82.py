@@ -24,28 +24,43 @@ def get_path(M):
             A.put(i, j, inf)
     for i in range(M.size): # set A_{0,0...n-1} to be M_{i,j}
         A.put(0, i, M.at(0, i))
+    for col in range(1,M.size):
+        update_col(M, A, col)
+        improve_row(M, A, col)
+    return get_col_min(A, A.size-1)
 
-    for i in range(1, M.size): # do the work
-        for j in range(M.size):
-            weight = A.at(i-1,j) + M.at(i,j)
-            A.put(i,j, weight)
-        for k in range(M.size):
-            if j == 0:
-                alt = A.at(i, k+1) + M.at(i, k)
-                if alt < A.at(i,k):
-                    A.put(i,k, alt)
-            if j == M.size-1:
-                alt = A.at(i, k-1) + M.at(i, k) 
-                if alt < A.at(i,k):
-                    A.put(i,k, alt)
-            else:
-                alt1 = A.at(i, k-1) + M.at(i, k)
-                alt2 = A.at(i, k+1) + M.at(i, k)
-                alt = min(alt1, alt2)
-                if alt < A.at(i,k):
-                    A.put(i,k, alt)
-    A.pprint()
-    # return A.at(A.size-1, A.size-1)
+def update_col(G, M, col):
+    """
+    M is the matrix being updated.
+
+    This function sums across columns of the matrix G.
+    """
+    assert G.size == M.size, "G and M are of differing sizes"
+    assert col < G.size, "Argument col (%f) is too big" % col
+    if col == 0:
+        for i in range(G.size): 
+            M.put(0,i, G.at(0,i))
+    else:
+        for j in range(G.size):
+            temp = M.at(col-1, j) + G.at(col, j)
+            M.put(col, j, temp)
+
+def improve_row(G, M, col):
+    """
+    M is the matrix being improved, col is the column upon which the procedure is being performed.
+    
+    This function moves a sliding window down M.(col, 0...n). 
+    """
+    for j in range(G.size):
+        a = [M.at(col, j)]
+        if j == 0:
+            a += [M.at(col, j+1) + G.at(col, j)]
+        if j == G.size-1:
+            a += [M.at(col, j-1) + G.at(col, j)]
+        else:
+            a += [M.at(col, j+1) + G.at(col, j), M.at(col, j-1) + G.at(col, j)]
+        if min(a) < M.at(col, j):
+            M.put(col, j, min(a))
 
 def get_min(G, i, j):
     if j == 0:
@@ -66,7 +81,5 @@ def get_min(G, i, j):
 def get_col_min(G, col):
     vector = []
     for j in range(G.size):
-        v.append(G.at(col, j))
+        vector.append(G.at(col, j))
     return min(vector)
-
-# get_path(matrix(int(len(M)**(1/2)), M))
