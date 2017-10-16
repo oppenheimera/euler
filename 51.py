@@ -56,6 +56,31 @@ def base_eq(string1, string2):
             return False
     return True
 
+
+def edits_away(string1, string2):
+    return sum([1 for i in range(len(string1)) if string1[i] != string2[i]])
+
+def primes_with_n_subs(n, edits, targ):
+    """
+    :param n: length of primes being checked.
+    :param edits: substitution distance allowed.
+    :param targ: size of family desired.
+    """
+    primes = n_length_primes(n)
+    macro_ans = []
+    try:
+        for i in range(len(primes)):
+            ans = [primes[i]]
+            for j in range(i, len(primes)):
+                if edits_away(primes[i], primes[j]) == edits:
+                    ans.append(primes[j])
+            if len(ans) == targ:
+                macro_ans.append(ans)
+                for elem in ans:
+                    primes.remove(elem)
+    finally:
+        return macro_ans
+
 def main(s):
     """
     :param s: the base string to be checked.
@@ -68,4 +93,4 @@ def main(s):
 
 if __name__ == '__main__':
     arg = argv[-1]
-    main(arg)
+    # main(arg)
