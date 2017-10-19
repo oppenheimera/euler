@@ -1,5 +1,43 @@
 from gmpy2 import is_prime
+from itertools import combinations
 from sys import argv
+
+def work(l, i):
+    """
+    :param l: the length of primes desired
+    :param i: the indices to be replaced with asterixes
+    
+    returns all eight-family primes (if any exist) of
+    length-l primes where all indices i are equal
+    """
+    d = dict()
+    candidates = [x for x in n_length_primes(l)]
+    candidates = [[x for x in y] for y in candidates if checkindices(y, i)]
+    for c in candidates:
+        for idx in i:
+            c[idx] = '*'
+    candidates = [''.join(x) for x in candidates]
+    for x in candidates:
+        if x in d:
+            d[x] += 1
+        else:
+            d[x] = 1
+    eight_fams = [key for key in d if d[key] == 8]
+    return eight_fams 
+
+def checkindices(p, i):
+    """
+    :param p: prime to be checked
+    :param i: indices to be checked
+
+    >>> checkindices('121313', (0,2,4))
+    True
+    """
+    assert type(p) == str, "argument p is not a string"
+    for idx in i[1:]:
+        if p[idx] != p[i[0]]:
+            return False
+    return True
 
 def n_length_primes(n):
     """ Returns all primes of length n as strings. """
@@ -10,87 +48,37 @@ def n_length_primes(n):
             a.append(str(i))
     return a
 
-def find(string, target):
-    return [i for i in range(len(string)) if string[i] == target]
-
-def get_fam(base):
-    indices = find(base, "*")
-    found = []
-    primes = n_length_primes(len(base))
-    for p in primes:
-        if indices_eq(p, indices) and base_eq(base, p):
-            found.append(p)
-    return found
-
-def indices_eq(string, indices):
+def findfamily(p):
     """
-    :param string: base string to check
-    :param indices: indices that need be checked.
+    given an 'asterixed' prime, find its family.
 
-    Returns a boolean dictating whether all indices of the string are 
-    of the same character.
-
-    >>> indices_eq("56003", [2,3])
-    True
+    >>> findfamily('121313'):
+    ['121313', '222323', '323333', '424343', '525353', '626363', '828383', '929393']
     """
-    targ = string[indices[0]]
-    for i in indices[1:]:
-        if string[i] != targ:
-            return False
-    return True
+    ans = []
+    for i in range(10):
+        candidate = p.replace("*", str(i))
+        if is_prime(int(candidate)):
+            ans.append(candidate)
+    return sorted(ans)
 
-def base_eq(string1, string2):
+def findsolutions(r, l):
     """
-    :param string1: the base string, should be of the form '123**67'.
-    :param string2: the string which is to be evaluated against string1
+    :param r: length of primes desired
+    :param l: number of indices to check
 
-    Returns a boolean dictating whether string1 and string2 contain the 
-    same characters, outside of all '*' characters
-
-    >>> base_eq('56**3', '56003')
-    True
+    i.e. main(5, 2) checks length five primes at every
+    two possible indicies
     """
-    assert '*' in string1, "Bad argument, string1 (%d) must contain the character '*'." % string1
-    for i in range(len(string1)):
-        if string1[i] != '*' and string1[i] != string2[i]:
-            return False
-    return True
+    ans = []
+    for c in combinations(range(r), l):
+        ans += work(r, c)
+    return sorted(ans)
 
-
-def edits_away(string1, string2):
-    return sum([1 for i in range(len(string1)) if string1[i] != string2[i]])
-
-def primes_with_n_subs(n, edits, targ):
-    """
-    :param n: length of primes being checked.
-    :param edits: substitution distance allowed.
-    :param targ: size of family desired.
-    """
-    primes = n_length_primes(n)
-    macro_ans = []
-    try:
-        for i in range(len(primes)):
-            ans = [primes[i]]
-            for j in range(i, len(primes)):
-                if edits_away(primes[i], primes[j]) == edits:
-                    ans.append(primes[j])
-            if len(ans) == targ:
-                macro_ans.append(ans)
-                for elem in ans:
-                    primes.remove(elem)
-    finally:
-        return macro_ans
-
-def main(s):
-    """
-    :param s: the base string to be checked.
-
-    Command line argument should be of the form: 
-    $ python 51.py 's'
-    """
-    ans = get_fam(s)
-    print(len(ans), ans)
+def main(r, l):
+    for sol in findsolutions(r, l):
+        print(findfamily(sol))
 
 if __name__ == '__main__':
-    arg = argv[-1]
-    # main(arg)
+    r, l = argv[-2:]
+    main(int(r), int(l))
