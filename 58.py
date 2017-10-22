@@ -1,4 +1,4 @@
-from utils import prime
+from gmpy2 import is_prime
 from math import sqrt
 """
 65 64 63 62 61 60 59 58 57
@@ -25,24 +25,25 @@ d1 = d4 - 3 * (sqrt(d4) - 1)
 
 At this point the code writes itself.
 """
-side_len = 1
-prime
+
 def get_percent_prime(l):
-    return len([p for p in l if prime(p)]) / len(l)
+    return sum(map(is_prime, l)) / len(l)
 
 def get_diags(d4):
     l = [d4]
-    l += [d4 - n * (sqrt(d4) - 1) for n in range(1,4)]
+    l += [int(d4 - n * (sqrt(d4) - 1)) for n in range(1,4)]
     return l
 
-idx = 3
-number_of_primes = 3
-number_of_diags = 5
+def main():
+    arr = [1] + get_diags(9)
+    idx = 5
+    p = get_percent_prime(arr)
+    # while p > 1/10:
+    for i in range(10):
+        print(p)
+        arr += get_diags(idx**2)
+        idx += 2
+    print(idx)
 
-while number_of_primes / number_of_diags > .1 and number_of_primes != 0:
-    print(number_of_primes / number_of_diags)
-    number_of_primes += sum([True for p in get_diags(idx**2) if prime(p)])
-    number_of_diags += 4
-    idx += 2
-
-print("d4: {}; len(side): {}".format((idx-2)**2, idx))
+if __name__ == "__main__":
+    main()
